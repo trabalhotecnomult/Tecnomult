@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tecnomult | Links</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f1; --card:#ffffff; --ink:#14202b; --muted:#66757f; --line:#dde5e3; --accent:#1f7a5a; --accent-ink:#ffffff;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0f1715; --card:#18231f; --ink:#eaf1ee; --muted:#93a5a0; --line:#263530; --accent:#3fbf93; --accent-ink:#06130e;}
+}
+:root[data-theme="dark"]{--bg:#0f1715; --card:#18231f; --ink:#eaf1ee; --muted:#93a5a0; --line:#263530; --accent:#3fbf93; --accent-ink:#06130e;}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:28px 16px 48px}
+header{text-align:center;margin-bottom:22px}
+.avatar{width:84px;height:84px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:32px;font-weight:800;margin:0 auto 12px}
+h1{font-size:22px;font-weight:800;margin:0 0 4px}
+header p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.search{position:relative;margin-bottom:16px}
+.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;height:50px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 18px 0 46px;font:inherit;font-size:15px}
+.search input:focus-visible,a.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.list{display:flex;flex-direction:column;gap:12px}
+a.card{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:20px;color:inherit;text-decoration:none;min-height:80px;transition:transform .15s,border-color .15s}
+a.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+a.card.destaque{border-color:var(--accent);border-width:2px}
+.thumb{flex:0 0 56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:28px}
+.txt{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.35}
+.txt small{display:block;color:var(--muted);font-weight:500;font-size:13px;margin-top:2px}
+.ext{flex:0 0 auto;color:var(--muted)}
+.vazio{text-align:center;color:var(--muted);padding:28px 0;font-size:14px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
+@media (prefers-reduced-motion:reduce){a.card{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="avatar" aria-hidden="true">T</div>
+    <h1 id="nome">Tecnomult</h1>
+    <p id="bio">Tecnologia, ofertas e novidades. Escolha um link abaixo.</p>
+  </header>
+
+  <label class="search">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="busca" type="search" placeholder="Pesquisar produto, vídeo ou oferta…" aria-label="Pesquisar links" autocomplete="off">
+  </label>
+
+  <section class="list" id="lista"></section>
+  <p class="vazio" id="vazio" hidden>Nenhum link encontrado. Tente outra palavra.</p>
+  <footer>© <span id="ano"></span> Tecnomult</footer>
+</main>
+
+<script>
+/* EDITE AQUI: troque título, subtítulo, link (url), emoji e cor de cada card. */
+const LINKS = [
+  {titulo:"Sorteio de R$ 250 mil: entre e garanta a promoção de pré-venda!", url:"#", emoji:"🎁", cor:"#ffe3a8", destaque:true},
+  {titulo:"Clique aqui para participar do nosso canal!", url:"#", emoji:"📣", cor:"#c9f0d4"},
+  {titulo:"O maior grupo de promoções do Brasil", sub:"100% grátis. Entre agora!", url:"#", emoji:"🛒", cor:"#c6e8f5"},
+  {titulo:"Monociclo elétrico", sub:"Use o cupom SEUCUPOM e garanta descontos exclusivos no site.", url:"#", emoji:"🛞", cor:"#e4dcf7"},
+  {titulo:"Secador de filamentos #1521", url:"#", emoji:"🧵", cor:"#f6dcd2"},
+  {titulo:"Avião de controle remoto #1520", url:"#", emoji:"✈️", cor:"#d8e8f9"},
+  {titulo:"Liquidificador de alta capacidade #1519", url:"#", emoji:"🥤", cor:"#fbe0e6"}
+];
+const lista=document.getElementById('lista'), busca=document.getElementById('busca'), vazio=document.getElementById('vazio');
+document.getElementById('ano').textContent=new Date().getFullYear();
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function render(filtro=''){
+  const f=filtro.trim().toLowerCase();
+  const itens=LINKS.filter(l=>(l.titulo+' '+(l.sub||'')).toLowerCase().includes(f));
+  lista.innerHTML=itens.map(l=>`
+    <a class="card${l.destaque?' destaque':''}" href="${esc(l.url)}" target="_blank" rel="noopener">
+      <span class="thumb" style="background:${esc(l.cor)}" aria-hidden="true">${l.emoji}</span>
+      <span class="txt">${esc(l.titulo)}${l.sub?`<small>${esc(l.sub)}</small>`:''}</span>
+      <svg class="ext" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+    </a>`).join('');
+  vazio.hidden=itens.length>0;
+}
+busca.addEventListener('input',e=>render(e.target.value));
+render();
+</script>
+</body>
+</html>
